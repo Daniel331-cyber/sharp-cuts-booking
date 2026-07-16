@@ -82,27 +82,26 @@ export default function BookingModal({ isOpen, onClose, onBookingComplete }: Boo
     // Get the admin device token
 const { data: tokens } = await supabase
   .from("device_tokens")
-  .select("token")
-  .limit(1);
+  .select("token");
 
 if (tokens && tokens.length > 0) {
-  const token = tokens[0].token;
+  for (const device of tokens) {
+    const { data, error } = await supabase.functions.invoke(
+      "send-booking-notification",
+      {
+        body: {
+          token: device.token,
+          name: booking.name,
+          time: booking.time,
+        },
+      }
+    );
 
-  const { data, error } = await supabase.functions.invoke(
-    "send-booking-notification",
-    {
-      body: {
-        token,
-        name: booking.name,
-        time: booking.time,
-      },
+    console.log("Notification Result:", data);
+
+    if (error) {
+      console.error("Notification Error:", error);
     }
-  );
-
-  console.log("Notification Result:", data);
-
-  if (error) {
-    console.error("Notification Error:", error);
   }
 }
 
