@@ -14,11 +14,7 @@ export default function AdminPage() {
     setIsAuthenticated(true);
     setError("");
 
-    alert("Login successful - about to request notifications");
-
-await requestNotificationPermission();
-
-alert("Finished requestNotificationPermission()");
+  await requestNotificationPermission();
   } else {
     setError("Invalid password");
   }

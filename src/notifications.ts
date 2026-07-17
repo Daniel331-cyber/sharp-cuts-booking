@@ -33,18 +33,26 @@ if (!token) {
 
 console.log("About to save token to Supabase...");
 if (token) {
-  const { error } = await supabase
+  console.log("Saving token:", token);
+
+  const { data, error } = await supabase
     .from("device_tokens")
     .upsert(
       [{ token }],
       {
         onConflict: "token",
       }
-    );
+    )
+    .select();
+
+  console.log("Supabase returned data:", data);
+  console.log("Supabase returned error:", error);
 
   if (error) {
+    alert("Database Error");
     console.error(error);
   } else {
+    alert("Token saved successfully!");
     console.log("Admin token saved successfully");
   }
 }
