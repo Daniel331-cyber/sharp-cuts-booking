@@ -8,44 +8,42 @@ const vapidKey =
 export async function requestNotificationPermission() {
   try {
 
-    // If permission is already granted, don't ask again
-    if (Notification.permission === "granted") {
-      console.log("Notifications already enabled");
-      return;
-    }
+let permission = Notification.permission;
 
-    const permission = await Notification.requestPermission();
+if (permission !== "granted") {
+  permission = await Notification.requestPermission();
+}
 
-    const token = await getToken(messaging, {
-      vapidKey,
-    });
+if (permission !== "granted") {
+  alert("Notification permission denied");
+  return;
+}
 
-    console.log("FCM TOKEN:", token);
+const token = await getToken(messaging, {
+  vapidKey,
+});
 
-   if (token) {
+console.log("FCM TOKEN:", token);
 
-  // Remove any previously saved admin token
-  const { error: deleteError } = await supabase
-    .from("device_tokens")
-    .delete()
-    .neq("id", 0);
+if (!token) {
+  console.error("Firebase returned an empty token.");
+  alert("No FCM token was generated.");
+  return;
+}
 
-  if (deleteError) {
-    console.error("Error deleting old token:", deleteError);
-  }
-
-  // Save the current device token
+console.log("About to save token to Supabase...");
+if (token) {
   const { error } = await supabase
     .from("device_tokens")
-    .insert([
+    .upsert(
+      [{ token }],
       {
-        token,
-      },
-    ]);
+        onConflict: "token",
+      }
+    );
 
   if (error) {
-    console.log("FULL ERROR:", error);
-    console.log(JSON.stringify(error, null, 2));
+    console.error(error);
   } else {
     console.log("Admin token saved successfully");
   }

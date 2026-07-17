@@ -58,12 +58,7 @@ export default function AdminPage() {
 
   return (
     <div className="relative min-h-screen bg-[#FAF8F3]">
-      <button
-  onClick={requestNotificationPermission}
-  className="absolute left-6 top-6 z-50 rounded-lg bg-green-600 px-4 py-2 text-white"
->
-  Enable Notifications
-</button>
+      
       <button
         onClick={handleLogout}
         className="absolute right-6 top-6 z-50 rounded-lg bg-red-500 px-4 py-2 text-white"
