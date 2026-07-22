@@ -22,9 +22,16 @@ export async function requestNotificationPermission() {
 
     alert("Step 2: Permission granted");
 
-    const token = await getToken(messaging, {
-      vapidKey,
-    });
+    const registration = await navigator.serviceWorker.register(
+  "/firebase-messaging-sw.js"
+);
+
+console.log("Service Worker registered:", registration);
+
+const token = await getToken(messaging, {
+  vapidKey,
+  serviceWorkerRegistration: registration,
+});
 
     alert("Step 3: getToken() finished");
 
