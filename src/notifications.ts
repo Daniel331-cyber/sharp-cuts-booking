@@ -7,58 +7,58 @@ const vapidKey =
 
 export async function requestNotificationPermission() {
   try {
+    alert("Step 1: Starting notification setup");
 
-let permission = Notification.permission;
+    let permission = Notification.permission;
 
-if (permission !== "granted") {
-  permission = await Notification.requestPermission();
-}
+    if (permission !== "granted") {
+      permission = await Notification.requestPermission();
+    }
 
-if (permission !== "granted") {
-  alert("Notification permission denied");
-  return;
-}
+    if (permission !== "granted") {
+      alert("Notification permission denied.");
+      return;
+    }
 
-const token = await getToken(messaging, {
-  vapidKey,
-});
+    alert("Step 2: Permission granted");
 
-console.log("FCM TOKEN:", token);
+    const token = await getToken(messaging, {
+      vapidKey,
+    });
 
-if (!token) {
-  console.error("Firebase returned an empty token.");
-  alert("No FCM token was generated.");
-  return;
-}
+    alert("Step 3: getToken() finished");
 
-console.log("About to save token to Supabase...");
-if (token) {
-  console.log("Saving token:", token);
+    console.log("FCM TOKEN:", token);
 
-  const { data, error } = await supabase
-    .from("device_tokens")
-    .upsert(
-      [{ token }],
-      {
+    if (!token) {
+      alert("ERROR: Firebase returned an empty token.");
+      return;
+    }
+
+    alert("Step 4: Token generated");
+
+    const { data, error } = await supabase
+      .from("device_tokens")
+      .upsert([{ token }], {
         onConflict: "token",
-      }
-    )
-    .select();
+      })
+      .select();
 
-  console.log("Supabase returned data:", data);
-  console.log("Supabase returned error:", error);
+    console.log(data);
+    console.log(error);
 
-  if (error) {
-    alert("Database Error");
-    console.error(error);
-  } else {
-    alert("Token saved successfully!");
-    console.log("Admin token saved successfully");
-  }
-}
+    if (error) {
+      alert("DATABASE ERROR");
+      alert(JSON.stringify(error));
+      return;
+    }
 
-    alert("Notifications enabled successfully!");
-  } catch (error) {
-    console.error("Notification Error:", error);
+    alert("Step 5: Token saved successfully");
+  } catch (err: any) {
+    console.error(err);
+
+    alert("NOTIFICATION ERROR");
+
+    alert(err.message || JSON.stringify(err));
   }
 }
