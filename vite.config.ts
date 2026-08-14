@@ -21,29 +21,28 @@ export default defineConfig({
  plugins: [
   figmaAssetResolver(),
   react(),
-  tailwindcss(),
-  VitePWA({
-    registerType: 'autoUpdate',
-    manifest: {
-      name: 'Luxury Barber Booking',
-      short_name: 'Barber',
-      theme_color: '#000000',
-      background_color: '#000000',
-      display: 'standalone',
-      icons: [
-        {
-          src: '/icon-192.png',
-          sizes: '192x192',
-          type: 'image/png',
-        },
-        {
-          src: '/icon-512.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-      ],
-    },
-  }),
+ VitePWA({
+  registerType: 'autoUpdate',
+  manifest: {
+    name: 'Luxury Barber Booking',
+    short_name: 'Barber',
+    theme_color: '#000000',
+    background_color: '#000000',
+    display: 'standalone',
+    icons: [
+      {
+        src: '/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: '/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+    ],
+  },
+}),
 ],
   resolve: {
     alias: {
