@@ -21,7 +21,8 @@ export default defineConfig({
  plugins: [
   figmaAssetResolver(),
   react(),
- VitePWA({
+  tailwindcss(),
+  VitePWA({
   registerType: 'autoUpdate',
   manifest: {
     name: 'Luxury Barber Booking',
