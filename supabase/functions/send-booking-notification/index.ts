@@ -51,16 +51,18 @@ serve(async (req) => {
       }
     );
 
-    const data = await response.json();
+   const data = await response.json();
 
-    console.log("FCM RESPONSE:", data);
+console.log("FCM STATUS:", response.status);
+console.log("FCM RESPONSE:", data);
 
-    return new Response(JSON.stringify(data), {
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "application/json",
-      },
-    });
+return new Response(JSON.stringify(data), {
+  status: response.ok ? 200 : response.status,
+  headers: {
+    ...corsHeaders,
+    "Content-Type": "application/json",
+  },
+});
   } catch (error) {
     return new Response(
       JSON.stringify({

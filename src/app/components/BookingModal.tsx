@@ -97,7 +97,10 @@ if (tokens && tokens.length > 0) {
       }
     );
 
-    console.log("Notification Result:", data);
+    console.log("=== NOTIFICATION DEBUG ===");
+    console.log("Token:", device.token);
+    console.log("Supabase data:", data);
+    console.log("Supabase error:", error);
 
     if (error) {
       console.error("Notification Error:", error);
