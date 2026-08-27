@@ -22,8 +22,11 @@ export async function requestNotificationPermission() {
 
     alert("Step 2: Permission granted");
 
-   const registration = await navigator.serviceWorker.register(
-  "/firebase-messaging-sw.js"
+  const registration = await navigator.serviceWorker.register(
+  "/firebase-messaging-sw.js",
+  {
+    scope: "/firebase-cloud-messaging-push-scope",
+  }
 );
 
 alert("Service worker registered successfully");
