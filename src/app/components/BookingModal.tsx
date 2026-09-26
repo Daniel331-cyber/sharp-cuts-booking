@@ -79,35 +79,23 @@ export default function BookingModal({ isOpen, onClose, onBookingComplete }: Boo
       alert("Failed to save booking");
       return;
     }
-    // Get the admin device token
-const { data: tokens } = await supabase
-  .from("device_tokens")
-  .select("token");
+        // Send booking notification email
+const { data: emailData, error: emailError } =
+  await supabase.functions.invoke("send-booking-email", {
+    body: {
+      name: booking.name,
+      phone: booking.phone,
+      service: booking.service,
+      date: booking.date,
+      time: booking.time,
+    },
+  });
 
-if (tokens && tokens.length > 0) {
-  for (const device of tokens) {
-    const { data, error } = await supabase.functions.invoke(
-      "send-booking-notification",
-      {
-        body: {
-          token: device.token,
-          name: booking.name,
-          time: booking.time,
-        },
-      }
-    );
-
-    console.log("=== NOTIFICATION DEBUG ===");
-    console.log("Token:", device.token);
-    console.log("Supabase data:", data);
-    console.log("Supabase error:", error);
-
-    if (error) {
-      console.error("Notification Error:", error);
-    }
-  }
+if (emailError) {
+  console.error("EMAIL NOTIFICATION ERROR:", emailError);
+} else {
+  console.log("BOOKING EMAIL SENT SUCCESSFULLY:", emailData);
 }
-
     // Simulate SMS sending
     setTimeout(() => {
       setStep("success");
@@ -344,7 +332,7 @@ if (tokens && tokens.length > 0) {
 
                   <h2 className="mb-4 text-3xl text-[#0F4C3A]">Confirming Booking...</h2>
                   <p className="text-lg text-[#6B7280]">
-                    Please wait while we confirm your appointment and send SMS confirmation
+                   Please wait while we confirm your appointment and send your notification...
                   </p>
 
                   <div className="mt-8 space-y-3">
@@ -364,7 +352,7 @@ if (tokens && tokens.length > 0) {
                       className="flex items-center justify-center gap-3 text-[#6B7280]"
                     >
                       <div className="h-2 w-2 rounded-full bg-[#0F4C3A]" />
-                      Sending SMS confirmation to {formData.phone}...
+                      Sending booking notification...{formData.phone}...
                     </motion.div>
                   </div>
                 </div>
